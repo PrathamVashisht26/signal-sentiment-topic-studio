@@ -1,165 +1,153 @@
-# Real-Time Social Media Sentiment & Topic Analysis Engine
+# Signal — Sentiment & Topic Studio
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
-![Colab](https://img.shields.io/badge/Open%20In-Colab-orange?logo=google-colab)
-![NLP](https://img.shields.io/badge/NLP-NLTK-green)
-![AI](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-purple?logo=google)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+A local web application for exploring sentiment and recurring topics in English social-media posts. Paste text or upload a CSV, analyze it offline, and explore the results in an interactive dashboard.
 
-A complete end-to-end NLP pipeline that ingests social media posts, cleans raw text using advanced preprocessing, and uses **Google Gemini 1.5 Flash** to extract structured **sentiment** and **topic** information from each post — producing actionable insights with visualizations.
+**No API keys. No paid inference API. No live social-media collection.** Internet is needed only to install dependencies; analysis runs on your computer.
 
----
-
-## Problem It Solves
-
-Manually reading hundreds of social media posts to understand public opinion is impractical. This engine automates that process: given any keyword or topic, it fetches posts, cleans the noisy social media text, and classifies each post by sentiment and subject — in minutes.
-
-**Use cases:**
-- Track brand perception on social media
-- Monitor public opinion on news events
-- Analyse customer feedback at scale
-- Research public discourse around any topic
-
----
-
-## Pipeline Architecture
-
-```
-┌─────────────────────┐     ┌──────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
-│  STEP 1             │     │  STEP 2               │     │  STEP 3             │     │  STEP 4             │
-│  Data Ingestion     │────▶│  Text Preprocessing  │────▶│  AI Analysis        │────▶│  Visualization      │
-│  Twitter API v2     │     │  (NLTK + Regex +      │     │  (Gemini 1.5 Flash) │     │  (Matplotlib)       │
-│  or Sample Dataset  │     │   Lemmatization)      │     │  Sentiment + Topic  │     │  Charts & Insights  │
-└─────────────────────┘     └──────────────────────┘     └─────────────────────┘     └─────────────────────┘
-```
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Language | Python 3.10+ |
-| Social Data | Tweepy (Twitter API v2) |
-| Text Processing | NLTK, Regex, Emoji |
-| AI Analysis | Google Gemini 1.5 Flash |
-| Data Handling | Pandas |
-| Visualization | Matplotlib |
-| Runtime | Google Colab / Jupyter |
-
----
+Built by [Pratham Vashisht](https://github.com/PrathamVashisht26).
 
 ## Features
 
-- **Smart data ingestion** — Connects to Twitter API v2; automatically falls back to included sample dataset if API is unavailable
-- **Advanced NLP preprocessing pipeline** — Emoji demojization → URL removal → mention stripping → lemmatization → stopword removal
-- **LLM-powered analysis** — Uses Gemini 1.5 Flash to label sentiment (Positive / Negative / Neutral) and extract a topic phrase per tweet
-- **Structured JSON output** — Gemini responses are parsed and validated before saving
-- **Visualization dashboard** — Sentiment distribution bar chart + Top-10 topics horizontal bar chart
-- **Fully runnable without paid APIs** — Included sample dataset of 50 Electric Vehicle tweets lets you demo the entire pipeline for free
+- Analyze pasted posts, one per line, or a UTF-8 CSV with a `text` column.
+- Explore the included 50-post electric-vehicle example without supplying data.
+- Classify each whole post as positive, neutral, or negative using VADER.
+- Discover keyword groups using TF-IDF and Non-negative Matrix Factorization (NMF).
+- View sentiment distribution, average polarity, topic counts, and individual results.
+- Filter the results table by keyword and sentiment; export the complete analysis as CSV.
+- Use the built-in **How it works** page for a technical walkthrough.
+- Process up to 1,000 non-empty posts, 5,000 characters per post, and 2 MB per upload.
 
----
+## Quick start
 
-## Project Structure
-
-```
-├── Social_media_project.ipynb   ← Main notebook (run this)
-├── requirements.txt             ← Python dependencies
-├── .env.example                 ← API key template
-├── data/
-│   └── sample_tweets.csv        ← 50 sample EV tweets (no API needed)
-└── README.md
-```
-
----
-
-## Quick Start
-
-### Option A — Google Colab (Recommended)
-
-1. Click the **Open in Colab** badge at the top of the notebook
-2. Add your API keys to **Colab Secrets** (🔑 icon in the left sidebar):
-   - `GEMINI_API_KEY` — required for sentiment analysis *(free)*
-   - `BEARER_TOKEN` — optional, for live Twitter data *(paid plan required)*
-3. Click **Runtime → Run All**
-
-The notebook automatically uses the included `data/sample_tweets.csv` if no Twitter token is provided.
-
-### Option B — Local (Jupyter)
+Use Python 3.11. Clone the repository and install dependencies in a virtual environment.
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/PrathamVashisht26/Real-Time-Social-Media-Sentiment-Topic-Analysis-Engine-.git
-cd Real-Time-Social-Media-Sentiment-Topic-Analysis-Engine-
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Set up API keys
-cp .env.example .env
-# Edit .env and add your keys
-
-# 4. Launch the notebook
-jupyter notebook Social_media_project.ipynb
+git clone https://github.com/PrathamVashisht26/signal-sentiment-topic-studio.git
+cd signal-sentiment-topic-studio
+python -m venv .venv
 ```
 
----
+**Windows PowerShell:**
 
-## API Keys
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe app.py
+```
 
-### Google Gemini API Key (FREE)
-1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click **Create API Key**
-4. Add it to Colab Secrets as `GEMINI_API_KEY`
+After setup, you can also double-click `start.bat`.
 
-### Twitter Bearer Token (OPTIONAL — paid)
-> **Note:** Twitter's v2 `search_recent_tweets` endpoint requires a **paid Basic tier** subscription ($100/month as of 2024). The free developer account no longer includes this access.
-> 
-> The project includes a sample dataset so you can run and demo the full pipeline without this.
+**macOS / Linux:**
 
-1. Go to [developer.twitter.com/en/portal/dashboard](https://developer.twitter.com/en/portal/dashboard)
-2. Create a project and app
-3. Copy the **Bearer Token**
-4. Add it to Colab Secrets as `BEARER_TOKEN`
+```bash
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python app.py
+```
 
----
+Open **http://127.0.0.1:5000**. Keep the terminal open during your demo; press Ctrl+C to stop. This address works on the machine running the application. The development server is not a public hosting deployment.
 
-## Sample Output
+If Windows prevents creating a virtual environment under OneDrive, use a normal local development folder.
 
-The notebook produces:
-- `cleaned_tweets.csv` — preprocessed text ready for analysis
-- `analyzed_tweets.csv` — tweets with `sentiment` and `topic` columns added
-- `sentiment_analysis_results.png` — visualization chart
+## How to use it
 
-**Example analyzed row:**
+1. The dashboard starts with a clearly labeled **example dataset**.
+2. Paste your own posts and click **Analyze posts**, or switch to **Upload CSV**.
+3. Inspect the charts and individual post results.
+4. Search for a term such as `battery` to filter the already-analyzed table.
+5. Use **Export CSV** to download every analyzed post with its label, compound score, and topic terms.
 
-| text | sentiment | topic |
-|---|---|---|
-| "just drove tesla model mile single charge electric vehicle amazing" | Positive | EV Range |
-| "charging infrastructure electric vehicle nightmare waited minute broken charger" | Negative | Charging Issues |
-| "new study ev significantly lower lifetime emission gasoline car interesting data" | Neutral | EV Emissions |
+**Search does not fetch posts from the internet or recalculate the charts.** The charts and export describe the complete analysis, regardless of table filters. Sentiment applies to the whole post, not specifically to the searched keyword.
 
----
+Example CSV:
 
-## Known Limitations
+```csv
+text
+"This car is excellent!"
+"The battery is not good."
+"The new model launches on Tuesday."
+```
 
-| Limitation | Details |
-|---|---|
-| Twitter API access | Free tier no longer supports tweet search; paid plan required for live data |
-| Gemini quota | Free tier has per-minute rate limits; notebook adds `0.5s` delay between calls |
-| Analysis scope | Capped at 20 tweets for Gemini analysis to stay within free quota |
-| Language | Preprocessing optimised for English tweets only |
+Additional CSV columns are ignored. Empty entries and exact duplicate text are removed.
 
----
+## Architecture
 
-## Author
+```text
+Browser: HTML / CSS / JavaScript
+              |
+       POST /api/analyze
+              |
+       Flask validation
+              |
+       Deduplicate posts
+          /         \
+       VADER       TF-IDF + NMF
+          \         /
+          JSON response
+              |
+     Charts / table / CSV export
+```
 
-**Pratham Vashisht**  
-[GitHub](https://github.com/PrathamVashisht26)
+### Sentiment
 
----
+VADER is a lexicon and rule-based analyzer, not a transformer or generative model. URLs are removed for sentiment scoring, while negation, punctuation, and capitalization are preserved. Its normalized compound score ranges from -1 to +1:
 
-## License
+| Score | Label |
+| --- | --- |
+| >= 0.05 | Positive |
+| <= -0.05 | Negative |
+| Between these thresholds | Neutral |
 
-This project is licensed under the MIT License.
+Scores measure polarity, **not confidence probabilities**. Example: `This is good` and `This is not good` produce opposite labels.
+
+### Topics
+
+TF-IDF weights English unigrams and bigrams. NMF learns up to five groups with a fixed random seed; each post is assigned to its strongest group. Labels are the highest-weighted terms, not human-authored topic names. Fewer than four posts use top keywords instead. Text with no usable vocabulary retains sentiment results and an unassigned topic.
+
+### Data handling
+
+Text is processed in server memory and returned to your browser. The application makes no outbound analysis requests and stores no uploaded posts in a database. Refreshing resets the dashboard to the example; download a CSV to retain results. Export escapes formula prefixes for safer spreadsheet opening.
+
+## Notebook
+
+`Social_media_project.ipynb` demonstrates the same offline pipeline. From the repository root, install Jupyter separately if needed (`python -m pip install jupyter`) and open the notebook. It no longer requires Tweepy, Gemini, Colab Secrets, or NLTK downloads.
+
+## Tests
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest -v test_app.py
+```
+
+Tests cover sample analysis, negation, duplicates, CSV parsing, invalid input, empty vocabulary, upload limits, and static routes. GitHub Actions runs them on Python 3.11. Functional tests do not establish model accuracy.
+
+## Limitations
+
+- English only; sarcasm, slang, mixed sentiment and domain-specific language may be misclassified.
+- The sample dataset is for demonstration, not an accuracy benchmark or a live feed.
+- Topic groups depend on the uploaded corpus and may overlap or produce weak labels.
+- No claim of a measured accuracy percentage; evaluate against human-labeled domain data first.
+- The app has no live collector, authentication, persistence, or public hosting configuration.
+- Your laptop must remain on while demonstrating the locally hosted website.
+
+## Repository structure
+
+```text
+app.py                       Flask API and offline analysis
+templates/index.html         Dashboard and pipeline explanation
+static/                      JavaScript and styles
+data/sample_tweets.csv       50-post EV example
+Social_media_project.ipynb   Offline notebook walkthrough
+test_app.py                  Integration tests
+requirements.txt            Runtime dependencies
+start.bat                    Windows launcher after setup
+.github/workflows/tests.yml  Automated checks
+```
+
+## Project evolution
+
+Previously named **Real-Time Social Media Sentiment & Topic Analysis Engine**, this project depended on X/Twitter access and Gemini inference. Signal replaces those dependencies with an offline website and an explainable NLP baseline. The earlier implementation remains in Git history. Potential future work includes an evaluated transformer backend and a separately labeled live-data collector.
+
+## References and license
+
+- [VADER](https://github.com/cjhutto/vaderSentiment)
+- [Scikit-learn topic extraction](https://scikit-learn.org/stable/auto_examples/applications/plot_topics_extraction_with_nmf_lda.html)
+
+MIT License. See [LICENSE](LICENSE).
